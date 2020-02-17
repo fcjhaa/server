@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func indexHandler(w http.ResponseWriter, r http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello!")
 }
 
