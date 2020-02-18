@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -34,9 +35,10 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
-	http.HandleFunc("/", rootHandler)
-	http.HandleFunc("/li", myLay)
-	http.ListenAndServe(":9487", nil)
+	myRouter := mux.NewRouter().StrictSlash(true)
+	myRouter.HandleFunc("/", rootHandler)
+	myRouter.HandleFunc("/li", myLay)
+	http.ListenAndServe(":9487", myRouter)
 }
 
 func main() {
