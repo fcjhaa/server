@@ -1,12 +1,23 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+type Lawry struct {
+	Li  string `json:"li"`
+	Way string `json:"way"`
+}
+
+func myLay(w http.ResponseWriter, r *http.Request) {
+	lilies := Lawry{"Hi", "NiHow"}
+	json.NewEncoder(w).Encode(lilies)
+}
+
+func rootHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
 	for k, v := range r.Header {
 		fmt.Fprintf(w, "Header[%q]=%q\n", k, v)
@@ -23,7 +34,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", rootHandler)
+	http.HandleFunc("/li", myLay)
 	http.ListenAndServe(":9487", nil)
 }
 
