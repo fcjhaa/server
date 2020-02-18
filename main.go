@@ -6,16 +6,31 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type Lawry struct {
+	Id  int    `json:"id"`
 	Li  string `json:"li"`
 	Way string `json:"way"`
 }
 
 func myLay(w http.ResponseWriter, r *http.Request) {
-	lilies := Lawry{"Hi", "NiHow"}
-	json.NewEncoder(w).Encode(lilies)
+	vars := mux.Vars(r)
+	key, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		panic(err)
+	}
+	lilies := []Lawry{
+		{0, "Hi", "NiHow"},
+		{1, "f*ck", "you"},
+		{2, "sor", "ry"},
+	}
+	for _, lily := range lilies {
+		if lily.Id == key {
+			json.NewEncoder(w).Encode(lily)
+		}
+	}
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +52,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", rootHandler)
-	myRouter.HandleFunc("/li", myLay)
+	myRouter.HandleFunc("/li{id}", myLay)
 	http.ListenAndServe(":9487", myRouter)
 }
 
